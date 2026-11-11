@@ -1,0 +1,25 @@
+{
+  "model_version": "v4-20261110-2347",
+  "input_name": "input",
+  "logits_name": "logits",
+  "cams_name": "cams",
+  "input_size": 224,
+  "mean": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "std": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "resize_mode": "squash",
+  "crop_pct": 1.0,
+  "labels": [
+    "Extra",
+    "Class II",
+    "Class I",
+    "Reject"
+  ]
+}
