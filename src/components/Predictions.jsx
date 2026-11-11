@@ -17,6 +17,10 @@ export default function Predictions({ items, selectedIndex, onSelect }) {
               <div className="mt-1 h-2 w-full overflow-hidden rounded bg-slate-700">
                 <div className="h-full bg-sky-400" style={{ width: `${percent}%` }} />
               </div>
+              <div className="mt-1 flex justify-between text-xs text-slate-400">
+                <span>Front {(item.front * 100).toFixed(1)}%</span>
+                <span>Back {(item.back * 100).toFixed(1)}%</span>
+              </div>
             </button>
           </li>
         )

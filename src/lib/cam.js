@@ -23,6 +23,16 @@ export function topK(probs, labels, k) {
     .slice(0, k)
 }
 
+export function averageProbs(probsList) {
+  const length = probsList[0].length
+  const out = new Float32Array(length)
+  for (const probs of probsList) {
+    for (let i = 0; i < length; i++) out[i] += probs[i]
+  }
+  for (let i = 0; i < length; i++) out[i] /= probsList.length
+  return out
+}
+
 // camDims = [1, numClasses, h, w]. Returns a ReLU'd, 0..1 normalised map for one class.
 export function extractCam(cams, camDims, classIndex) {
   const h = camDims[2]
