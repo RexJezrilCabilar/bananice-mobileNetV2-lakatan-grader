@@ -9,9 +9,8 @@ import { loadModel, predict } from './lib/ort.js'
 import { isNativeApp } from './lib/platform.js'
 
 const DISPLAY_SIZE = 448
-// CHANGE THESE TWO to your GitHub username and repository name
-const GITHUB_USER = 'YOUR_GITHUB_USERNAME'
-const GITHUB_REPO = 'gradcam-app'
+const GITHUB_USER = 'RexJezrilCabilar'
+const GITHUB_REPO = 'bananice-mobileNetV2-lakatan-grader'
 const APK_URL = `https://github.com/${GITHUB_USER}/${GITHUB_REPO}/releases/latest/download/app.apk`
 
 export default function App() {
@@ -80,7 +79,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
         <header className="space-y-2">
-          <h1 className="text-2xl font-bold">GradCAM Classifier</h1>
+          <h1 className="text-2xl font-bold">Bananice: Lakatan Quality Classifier</h1>
           <p className="text-sm text-slate-400">
             Pick a photo. The model runs on your device and highlights the regions that drove its answer.
           </p>
