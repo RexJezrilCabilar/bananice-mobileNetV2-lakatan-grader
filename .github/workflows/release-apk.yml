@@ -1,0 +1,88 @@
+  name: Release APK
+
+  on:
+    push:
+      tags:
+        - 'v*'
+
+  permissions:
+    contents: write
+
+  jobs:
+    build-apk:
+      runs-on: ubuntu-24.04
+      steps:
+        - name: Checkout
+          uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+        - name: Set up Node
+          uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+          with:
+            node-version: 26
+            cache: npm
+
+        - name: Use the preinstalled JDK 21
+          run: |
+            echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
+            echo "$JAVA_HOME_21_X64/bin" >> "$GITHUB_PATH"
+
+        - name: Install dependencies
+          run: npm ci
+
+        - name: Build the web app for Android
+          run: npm run build:app
+
+        - name: Copy the web build into the Android project
+          run: npx cap sync android
+
+        - name: Set version from the tag
+          run: |
+            set -eu
+            VERSION_NAME="${GITHUB_REF_NAME#v}"
+            sed -i -E "s/versionCode[ =]*[0-9]+/versionCode ${GITHUB_RUN_NUMBER}/" android/app/build.gradle
+            sed -i -E "s/versionName[ =]*\"[^\"]*\"/versionName \"${VERSION_NAME}\"/" android/app/build.gradle
+            grep -n -E "versionCode|versionName" android/app/build.gradle
+            grep -q "versionCode ${GITHUB_RUN_NUMBER}" android/app/build.gradle
+            grep -q "versionName \"${VERSION_NAME}\"" android/app/build.gradle
+
+        - name: Build the unsigned release APK
+          working-directory: android
+          run: |
+            chmod +x ./gradlew
+            ./gradlew assembleRelease --no-daemon
+
+        - name: Sign the APK
+          env:
+            KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+            KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+            KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          run: |
+            set -eu
+            echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/release.jks"
+            test -s "$RUNNER_TEMP/release.jks"
+            UNSIGNED="$(find android/app/build/outputs/apk/release -name '*-unsigned.apk' | head -n 1)"
+            test -n "$UNSIGNED"
+            SDK="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+            BT_DIR="$(ls -d "$SDK"/build-tools/* | sort -V | tail -n 1)"
+            test -x "$BT_DIR/apksigner"
+            "$BT_DIR/zipalign" -f -p 4 "$UNSIGNED" "$RUNNER_TEMP/aligned.apk"
+            "$BT_DIR/apksigner" sign \
+              --ks "$RUNNER_TEMP/release.jks" \
+              --ks-key-alias "$KEY_ALIAS" \
+              --ks-pass env:KEYSTORE_PASSWORD \
+              --key-pass env:KEYSTORE_PASSWORD \
+              --out app.apk \
+              "$RUNNER_TEMP/aligned.apk"
+            "$BT_DIR/apksigner" verify --print-certs app.apk
+            sha256sum app.apk > app.apk.sha256
+
+        - name: Publish the GitHub Release
+          env:
+            GH_TOKEN: ${{ github.token }}
+            GH_REPO: ${{ github.repository }}
+          run: |
+            if gh release view "$GITHUB_REF_NAME" > /dev/null 2>&1; then
+              gh release upload "$GITHUB_REF_NAME" app.apk app.apk.sha256 --clobber
+            else
+              gh release create "$GITHUB_REF_NAME" app.apk app.apk.sha256 --title "$GITHUB_REF_NAME" --generate-notes
+            fi

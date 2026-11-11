@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bananice: Lakatan Quality Classifier</string>
+    <string name="title_activity_main">Bananice: Lakatan Quality Classifier</string>
+    <string name="package_name">io.github.RexJezrilCabilar.bananice</string>
+    <string name="custom_url_scheme">io.github.RexJezrilCabilar.bananice</string>
+</resources>
