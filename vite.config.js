@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => {
         registerType: 'autoUpdate',
         injectRegister: 'script',
         manifest: {
-          name: 'GradCAM Classifier',
-          short_name: 'GradCAM',
+          name: 'Bananice: Lakatan Quality Classifier',
+          short_name: 'Bananice',
           description: 'Offline image classifier that shows Grad-CAM heatmaps',
           theme_color: '#0f172a',
           background_color: '#0f172a',
