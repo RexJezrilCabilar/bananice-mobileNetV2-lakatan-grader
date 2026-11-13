@@ -254,6 +254,7 @@ export default function App() {
               </a>
               . Open the file after downloading and allow installs from your browser when Android asks.
             </p>
+            
           </footer>
         )}
       </main>
