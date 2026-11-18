@@ -140,7 +140,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-950 text-slate-100">
       <main className="mx-auto flex max-w-2xl flex-col gap-6 px-4 py-8">
         <header className="space-y-2">
-          <h1 className="text-2xl font-bold">GradCAM Classifier</h1>
+          <h1 className="text-2xl font-bold">BanaNice</h1>
           <p className="text-sm text-slate-400">
             Take a front photo and a back photo of the sample. The model checks both on your device and averages the
             results.
