@@ -49,7 +49,7 @@
           working-directory: android
           run: |
             chmod +x ./gradlew
-            ./gradlew assembleRelease --no-daemon
+            ./gradlew assembleRelease --no-daemon --init-script "$GITHUB_WORKSPACE/.github/gradle/maven-central-mirror.gradle"
 
         - name: Sign the APK
           env:

@@ -1,0 +1,25 @@
+// Asks Google's public copy of Maven Central before Maven Central itself.
+// GitHub's runners share IP addresses and Maven Central rate-limits them (HTTP 429).
+// google() and mavenCentral() stay declared in the build, so anything the copy
+// does not have yet is still downloaded from Maven Central.
+
+println "[init script] Using Google's Maven Central mirror first"
+
+def mirrorUrl = 'https://maven-central.storage-download.googleapis.com/maven2/'
+
+allprojects {
+    buildscript {
+        repositories {
+            maven {
+                name = 'googleMavenCentralMirror'
+                url = mirrorUrl
+            }
+        }
+    }
+    repositories {
+        maven {
+            name = 'googleMavenCentralMirror'
+            url = mirrorUrl
+        }
+    }
+}
