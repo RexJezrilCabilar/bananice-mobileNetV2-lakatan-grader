@@ -1,5 +1,5 @@
 {
-  "model_version": "v2-20261116-0149",
+  "model_version": "V2_finetuned-fp32-20261123-0010",
   "input_name": "input",
   "logits_name": "logits",
   "cams_name": "cams",
